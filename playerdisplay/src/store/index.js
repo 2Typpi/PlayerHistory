@@ -1,19 +1,24 @@
 import { createStore } from "vuex";
 import axios from "axios";
 
-axios.defaults.baseURL = "https://localhost:3001/";
+axios.defaults.baseURL = "http://localhost:3001/";
 
 export default createStore({
   state: {
     players: [],
   },
+  getters: {
+    players: (state) => {
+      return state.players;
+    },
+  },
   mutations: {},
   actions: {
     async loadAllPlayers() {
-      axios
+      return axios
         .get("stats/players")
         .then((response) => {
-          this.players = response;
+          this.state.players = response.data;
         })
         .catch((err) => console.log(err));
     },

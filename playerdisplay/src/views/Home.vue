@@ -1,22 +1,26 @@
 <template>
   <div class="home">
-    
+    <ul>
+      <li v-for="player in this.$data.players" :key="player.player_id">
+        {{ player.FirstName }}
+      </li>
+    </ul>
   </div>
 </template>
 
 <script>
-
 export default {
   name: 'Home',
   data() {
     return {
-      players: Array,
+      players: [],
     }
   },
   components: {
   },
   async created() {
-    this.players = await this.$store.dispatch("loadAllPlayers");
+    await this.$store.dispatch("loadAllPlayers");
+    this.players = this.$store.getters.players;
     console.log(this.players);
   }
 }

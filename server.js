@@ -7,8 +7,6 @@ import { dirname, join } from "path";
 
 import { sequelizeCon } from "./utils/database.js";
 
-import { Player } from "./models/player.js";
-
 sequelizeCon.sync();
 //sequelizeCon.sync({ force: true });
 
