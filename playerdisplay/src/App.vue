@@ -1,11 +1,16 @@
 <script setup>
   import NavigationBar from '@/components/NavigationBar.vue'
+  import { NDialogProvider, NMessageProvider } from 'naive-ui'
 </script>
 
 <template>
   <div> 
     <navigation-bar></navigation-bar>
-    <router-view></router-view>
+    <n-dialog-provider>
+      <n-message-provider>
+        <router-view></router-view>
+      </n-message-provider>
+    </n-dialog-provider>
   </div>
 </template>
 

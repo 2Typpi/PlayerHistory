@@ -39,6 +39,7 @@ export async function editPlayerService(player) {
 }
 
 export async function deletePlayerService(uuid) {
+  console.log(uuid);
   return Player.destroy({
     where: {
       player_id: uuid,

@@ -50,6 +50,8 @@ function editPlayer(req, res, next) {
 
 function deletePlayer(req, res, next) {
   deletePlayerService(req.params.uuid)
-    .then((stats) => (stats === 0 ? res.sendStatus(204) : res.sendStatus(404)))
+    .then((stats) => {
+      stats === 1 ? res.sendStatus(204) : res.sendStatus(404);
+    })
     .catch((err) => next(err));
 }
