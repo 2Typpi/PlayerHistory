@@ -1,15 +1,13 @@
 <template>
-  <h1>Create Player</h1>
+  <h1>Daten vom BFV holen</h1>
 </template>
 
 <script>
 import store from "../store/index.js"
 
 export default {
-  name: 'Create',
+  name: 'scrape-view',
   data() {
-    const dialog = useDialog();
-    const message = useMessage();
     return {
     };
   },

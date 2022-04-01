@@ -38,6 +38,7 @@ function loadPlayer(req, res, next) {
 
 function editPlayer(req, res, next) {
   const correctedPlayer = req.body;
+  console.log(correctedPlayer);
   const searchedPlayer = getPlayerById(req.params.uuid);
   if (searchedPlayer) {
     editPlayerService(correctedPlayer)

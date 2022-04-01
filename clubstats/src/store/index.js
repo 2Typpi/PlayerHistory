@@ -1,9 +1,12 @@
-import { createStore } from "vuex";
+import Vue from "vue";
+import Vuex from "vuex";
 import axios from "axios";
+
+Vue.use(Vuex);
 
 axios.defaults.baseURL = "http://localhost:3001/";
 
-export default createStore({
+const store = new Vuex.Store({
   state: {
     players: [],
     modal: false,
@@ -42,7 +45,7 @@ export default createStore({
     },
     async editPlayer(state, editedPlayer) {
       return axios
-        .put(`stats/players/${editedPlayer.player_id}`)
+        .put(`stats/players/${editedPlayer.player_id}`, editedPlayer)
         .then(() => {
           var result = this.state.players.findIndex((obj) => {
             return obj.player_id === editedPlayer.player_id;
@@ -56,3 +59,5 @@ export default createStore({
   },
   modules: {},
 });
+
+export default store;
