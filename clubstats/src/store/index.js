@@ -9,16 +9,22 @@ axios.defaults.baseURL = "http://localhost:3001/";
 const store = new Vuex.Store({
   state: {
     players: [],
-    modal: false,
+    scrapedPlayers: [],
   },
   getters: {
     players: (state) => {
       return state.players;
     },
+    scrapedPlayers: (state) => {
+      return state.scrapedPlayers;
+    },
   },
   mutations: {
     setPlayers(state, newPlayers) {
       state.players = newPlayers;
+    },
+    setscrapedPlayers(state, newPlayers) {
+      state.scrapedPlayers = newPlayers;
     },
   },
   actions: {
@@ -56,8 +62,17 @@ const store = new Vuex.Store({
         })
         .catch((err) => console.log(err));
     },
+    async activateScript(state, link) {
+      return axios
+        .get("stats/script", link)
+        .then((response) => {
+          state.commit("setScrapedPlayers", response.data);
+        })
+        .catch((err) => console.log(err));
+    },
   },
   modules: {},
 });
 
 export default store;
+
