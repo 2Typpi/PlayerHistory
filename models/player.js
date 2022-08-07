@@ -11,8 +11,7 @@ export const Player = sequelizeCon.define("player", {
     primaryKey: true,
   },
 
-  FirstName: { type: Sequelize.STRING, allowNull: false },
-  LastName: { type: Sequelize.STRING, allowNull: false },
+  Name: { type: Sequelize.STRING, allowNull: false },
   Games: { type: Sequelize.INTEGER, allowNull: false },
   Goals: { type: Sequelize.INTEGER, allowNull: false },
   YellowCards: { type: Sequelize.INTEGER, allowNull: false },

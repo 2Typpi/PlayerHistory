@@ -1,6 +1,7 @@
 import VueRouter from "vue-router";
 import Home from "../views/Home.vue";
 import Scrape from "../views/Scrape.vue";
+import Login from "../views/Login.vue";
 
 const routes = [
   {
@@ -12,6 +13,11 @@ const routes = [
     path: "/scrape",
     name: "Scrape",
     component: Scrape,
+  },
+  {
+    path: "/login",
+    name: "Login",
+    component: Login,
   },
 ];
 

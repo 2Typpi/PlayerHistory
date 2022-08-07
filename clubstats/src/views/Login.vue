@@ -1,23 +1,22 @@
 <template>
-  <div class="home">
-    <h1>Player List</h1>
+  <div>
+
   </div>
 </template>
 
 <script>
 
 export default {
-  name: 'Home',
+  name: 'login-view',
   data() {
     return {
-      players: [],
     }
+  },
+  watch: {
   },
   components: {
   },
   async created() {
-    await this.$store.dispatch("loadAllPlayers");
-    this.players = this.$store.getters.players;
   },
   methods: {
   },

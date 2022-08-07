@@ -5,8 +5,10 @@
     v-model="link"
     label="Link zum Spiel in BFV"
     single-line></v-text-field>
-    <v-btn
+    <v-btn color="primary"
     v-on:click="scrapeStats">Lade Statistiken</v-btn>
+    <v-btn color="primary"
+    v-on:click="saveToDb">Speichern</v-btn>
     <v-data-table
       :headers="headers"
       :items="this.players"
@@ -29,7 +31,7 @@
           <v-spacer></v-spacer>
           <v-dialog
             v-model="dialog"
-            max-width="500px"
+            max-width="700px"
           >
             <template v-slot:activator="{ on, attrs }">
               <v-btn
@@ -56,8 +58,8 @@
                       md="4"
                     >
                       <v-text-field
-                        v-model="editedItem.FirstName"
-                        label="Vorname"
+                        v-model="editedItem.name"
+                        label="Name"
                       ></v-text-field>
                     </v-col>
                     <v-col
@@ -66,17 +68,7 @@
                       md="4"
                     >
                       <v-text-field
-                        v-model="editedItem.LastName"
-                        label="Nachname"
-                      ></v-text-field>
-                    </v-col>
-                    <v-col
-                      cols="12"
-                      sm="6"
-                      md="4"
-                    >
-                      <v-text-field
-                        v-model="editedItem.Games"
+                        v-model="editedItem.games"
                         label="Spiele"
                       ></v-text-field>
                     </v-col>
@@ -86,7 +78,7 @@
                       md="4"
                     >
                       <v-text-field
-                        v-model="editedItem.Goals"
+                        v-model="editedItem.goals"
                         label="Tore"
                       ></v-text-field>
                     </v-col>
@@ -96,8 +88,28 @@
                       md="4"
                     >
                       <v-text-field
-                        v-model="editedItem.YellowCards"
+                        v-model="editedItem.yellow_cards"
                         label="Gelbe Karten"
+                      ></v-text-field>
+                    </v-col>
+                    <v-col
+                      cols="12"
+                      sm="6"
+                      md="4"
+                    >
+                      <v-text-field
+                        v-model="editedItem.yellow_red_cards"
+                        label="Gelb-Rote Karten"
+                      ></v-text-field>
+                    </v-col>
+                    <v-col
+                      cols="12"
+                      sm="6"
+                      md="4"
+                    >
+                      <v-text-field
+                        v-model="editedItem.red_cards"
+                        label="Rote Karten"
                       ></v-text-field>
                     </v-col>
                   </v-row>
@@ -155,6 +167,23 @@
         <v-subheader>No data found</v-subheader>
       </template>
     </v-data-table>
+    <v-snackbar
+      absolute
+      right
+      top
+      :color="this.snackbarColor"
+      v-model="snackbar"
+    >
+      {{ text }}
+        <v-btn
+          color="black"
+          text
+          v-bind="this.text"
+          @click="snackbar = false"
+        >
+          Close
+        </v-btn>
+    </v-snackbar>
   </div>
 </template>
 
@@ -163,42 +192,42 @@ export default {
   name: 'scrape-view',
   data() {
     return {
+      defaultItem: {
+        name:"",
+        games:0,
+        goals:0,
+        red_cards:0,
+        yellow_cards:0,
+        yellow_red_cards:0,
+        player_id:"",
+      },
       dialog: false,
       dialogDelete: false,
+      editedIndex: -1,
+      editedItem: {
+        name:"",
+        games:0,
+        goals:0,
+        red_cards:0,
+        yellow_cards:0,
+        yellow_red_cards:0,
+        player_id:"",
+      },
       headers: [
-        { text: 'Vorname', value: 'FirstName' },
-          { text: 'Nachname', value: 'LastName' },
-          { text: 'Spiele', value: 'Games' },
-          { text: 'Tore', value: 'Goals' },
-          { text: 'Gelbe Karten', value: 'YellowCards' },
-          { text: 'Gelb-Rote Karten', value: 'YellowRedCards' },
-          { text: 'Rote Karten', value: 'RedCards' },
-          { text: 'Actions', value: 'actions', sortable: false },
-        ],
+        { text: 'Name', value: 'name' },
+        { text: 'Spiele', value: 'games' },
+        { text: 'Tore', value: 'goals' },
+        { text: 'Gelbe Karten', value: 'yellow_cards' },
+        { text: 'Gelb-Rote Karten', value: 'yellow_red_cards' },
+        { text: 'Rote Karten', value: 'red_cards' },
+        { text: 'Actions', value: 'actions', sortable: false },
+      ],
       link: '',
       players: [],
       search: '',
-      editedIndex: -1,
-      editedItem: {
-        FirstName:"",
-        Games:0,
-        Goals:0,
-        LastName:"",
-        RedCards:0,
-        YellowCards:0,
-        YellowRedCards:0,
-        player_id:"",
-      },
-      defaultItem: {
-        FirstName:"",
-        Games:0,
-        Goals:0,
-        LastName:"",
-        RedCards:0,
-        YellowCards:0,
-        YellowRedCards:0,
-        player_id:"",
-      },
+      snackbar: false,
+      snackbarColor: "",
+      text: "",
     }
   },
   computed: {
@@ -220,10 +249,10 @@ export default {
       this.players = this.$store.getters.scrapedPlayers;
     },
     editItem (item) {
-        this.editedIndex = this.players.indexOf(item)
-        this.editedItem = Object.assign({}, item)
-        this.dialog = true
-      },
+      this.editedIndex = this.players.indexOf(item)
+      this.editedItem = Object.assign({}, item)
+      this.dialog = true
+    },
 
     deleteItem (item) {
       this.editedIndex = this.players.indexOf(item)
@@ -233,7 +262,6 @@ export default {
 
     deleteItemConfirm() {
       this.players.splice(this.editedIndex, 1)
-      this.$store.dispatch("delPlayer", this.editedItem.player_id)
       this.closeDelete()
     },
 
@@ -256,13 +284,26 @@ export default {
     save () {
       if (this.editedIndex > -1) {
         Object.assign(this.players[this.editedIndex], this.editedItem)
-        this.$store.dispatch("editPlayer", this.editedItem)
       } else {
-        //TODO: Add Player in DB
         this.players.push(this.editedItem)
       }
       this.close()
     },
+    saveToDb() {
+      this.$store.dispatch("addToStats", this.players)
+        .then((code) => {
+          this.players = []
+          if(code < 0) {
+            this.text = "Irgendwas ist schiefgelaufen! Die Daten bitte von Hand eintragen und melden"
+            this.snackbarColor = "red"
+            this.snackbar = true
+          } else {
+            this.text = "Erfolgreich gespeichert"
+            this.snackbarColor = "green"
+            this.snackbar = true
+          }
+        })
+    }
   },
 }
 </script>

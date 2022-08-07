@@ -49,18 +49,8 @@
                       md="4"
                     >
                       <v-text-field
-                        v-model="editedItem.FirstName"
-                        label="Vorname"
-                      ></v-text-field>
-                    </v-col>
-                    <v-col
-                      cols="12"
-                      sm="6"
-                      md="4"
-                    >
-                      <v-text-field
-                        v-model="editedItem.LastName"
-                        label="Nachname"
+                        v-model="editedItem.Name"
+                        label="Name"
                       ></v-text-field>
                     </v-col>
                     <v-col
@@ -161,8 +151,7 @@ export default {
       dialogDelete: false,
       players: [],
       headers: [
-          { text: 'Vorname', value: 'FirstName' },
-          { text: 'Nachname', value: 'LastName' },
+          { text: 'Name', value: 'Name' },
           { text: 'Spiele', value: 'Games' },
           { text: 'Tore', value: 'Goals' },
           { text: 'Gelbe Karten', value: 'YellowCards' },
@@ -173,20 +162,18 @@ export default {
       search: '',
       editedIndex: -1,
       editedItem: {
-        FirstName:"",
+        Name:"",
         Games:0,
         Goals:0,
-        LastName:"",
         RedCards:0,
         YellowCards:0,
         YellowRedCards:0,
         player_id:"",
       },
       defaultItem: {
-        FirstName:"",
+        Name:"",
         Games:0,
         Goals:0,
-        LastName:"",
         RedCards:0,
         YellowCards:0,
         YellowRedCards:0,

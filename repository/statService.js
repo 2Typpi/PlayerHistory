@@ -3,12 +3,12 @@ import validator from "validator";
 import { v4 as uuidv4 } from "uuid";
 import { Player } from "../models/player.js";
 
+//CRUD for players
 export async function getAll() {
   return await Player.findAll({
     attributes: [
       "player_id",
-      "FirstName",
-      "LastName",
+      "Name",
       "Games",
       "YellowCards",
       "YellowRedCards",
@@ -23,10 +23,33 @@ export async function getPlayerById(uuid) {
   return player;
 }
 
+export async function getPlayerByName(name) {
+  const [player, created] = await Player.findOrCreate({
+    where: { Name: name },
+    defaults: {
+      Games: 0,
+      Goals: 0,
+      YellowCards: 0,
+      YellowRedCards: 0,
+      RedCards: 0,
+    },
+  });
+  console.log(created);
+  return player;
+}
+
 export async function createPlayerService(player) {
   const createdPlayer = await Player.create(player);
-  console.log(createdPlayer);
   return createdPlayer;
+}
+
+export async function updatePlayer(dbPlayer, player) {
+  await dbPlayer.increment("Games", { by: player.games });
+  await dbPlayer.increment("Goals", { by: player.goals });
+  await dbPlayer.increment("YellowCards", { by: player.yellow_cards });
+  await dbPlayer.increment("YellowRedCards", { by: player.yellow_red_cards });
+  await dbPlayer.increment("RedCards", { by: player.red_cards });
+  return dbPlayer;
 }
 
 export async function editPlayerService(player) {
@@ -35,6 +58,8 @@ export async function editPlayerService(player) {
       player_id: player.player_id,
     },
   });
+  console.log("after: " + editedPlayer[0]);
+  console.log("before: " + player.player_id);
   return editedPlayer;
 }
 

@@ -6,6 +6,7 @@ import { fileURLToPath } from "url";
 import { dirname, join } from "path";
 
 import { sequelizeCon } from "./utils/database.js";
+import errorHandler from "./middleware/error-handler.js";
 
 sequelizeCon.sync();
 //sequelizeCon.sync({ force: true });
@@ -34,6 +35,8 @@ app.use("/stats", statsRouter);
 app.use(function (req, res, next) {
   next(createError(404));
 });
+
+app.use(errorHandler);
 
 app.use(function (err, req, res, next) {
   // set locals, only providing error in development

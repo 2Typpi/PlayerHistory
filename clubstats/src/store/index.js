@@ -23,7 +23,7 @@ const store = new Vuex.Store({
     setPlayers(state, newPlayers) {
       state.players = newPlayers;
     },
-    setscrapedPlayers(state, newPlayers) {
+    setScrapedPlayers(state, newPlayers) {
       state.scrapedPlayers = newPlayers;
     },
   },
@@ -63,10 +63,19 @@ const store = new Vuex.Store({
         .catch((err) => console.log(err));
     },
     async activateScript(state, link) {
+      console.log(link);
       return axios
-        .get("stats/script", link)
+        .get("stats/script", { params: { link: link } })
         .then((response) => {
           state.commit("setScrapedPlayers", response.data);
+        })
+        .catch((err) => console.log(err));
+    },
+    async addToStats(state, players) {
+      return axios
+        .put("stats/update", players)
+        .then(() => {
+          state.commit("setScrapedPlayers", []);
         })
         .catch((err) => console.log(err));
     },
