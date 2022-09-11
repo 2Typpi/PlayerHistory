@@ -1,20 +1,22 @@
 <template>
   <v-app>
     <v-app-bar
+      v-if="this.$store.getters.user !== null"
       app
       color="primary"
       dark
     >
       <div class="d-flex align-center">
-        <v-img
-          alt="TSV Babenhausen Wappen"
-          class="shrink mr-2"
-          contain
-          src="../public/images/Babenhausen.png"
-          transition="scale-transition"
-          width="40"
-        />
-
+        <a href="#/home">
+          <v-img
+            alt="TSV Babenhausen Wappen"
+            class="shrink mr-2"
+            contain
+            src="../public/images/Babenhausen.png"
+            transition="scale-transition"
+            width="40"
+          />
+        </a>
         <h1>TSV Babenhausen - Club History</h1>
       </div>
       <v-spacer></v-spacer>
@@ -22,6 +24,10 @@
       <v-btn to="/scrape">
         BFV Daten
         <v-icon right dark>mdi-cloud-download</v-icon>
+      </v-btn>
+
+      <v-btn v-on:click="logout">
+        Logout
       </v-btn>
 
     </v-app-bar>
@@ -45,5 +51,24 @@ export default {
   data: () => ({
     //
   }),
+  methods: {
+    logout() {
+      sessionStorage.clear();
+      console.log(sessionStorage);
+      this.$store.commit("setUser", null);
+      this.$router.push('/');
+    }
+  },
+  mounted() {
+    const user = sessionStorage.getItem("user");
+    console.log(user)
+    if (user !== "null" && user !== null) {
+      const user = {
+        Username: sessionStorage.getItem("user"),
+        token: sessionStorage.getItem("token"),
+      }
+      this.$store.commit("setUser", user);
+    }
+  },
 };
 </script>

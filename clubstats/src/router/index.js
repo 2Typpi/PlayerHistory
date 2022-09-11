@@ -5,7 +5,7 @@ import Login from "../views/Login.vue";
 
 const routes = [
   {
-    path: "/",
+    path: "/home",
     name: "Home",
     component: Home,
   },
@@ -15,7 +15,7 @@ const routes = [
     component: Scrape,
   },
   {
-    path: "/login",
+    path: "/",
     name: "Login",
     component: Login,
   },

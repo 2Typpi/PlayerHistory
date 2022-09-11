@@ -5,11 +5,25 @@ import axios from "axios";
 Vue.use(Vuex);
 
 axios.defaults.baseURL = "http://localhost:3001/";
+axios.interceptors.request.use(
+  (config) => {
+    const token = sessionStorage.getItem("token");
+    const user = sessionStorage.getItem("user");
+    console.log(token);
+    console.log(user);
+    if (token) {
+      config.headers["Authorization"] = `Bearer ${token}`;
+    }
+    return config;
+  },
+  (error) => Promise.reject(error)
+);
 
 const store = new Vuex.Store({
   state: {
     players: [],
     scrapedPlayers: [],
+    user: null,
   },
   getters: {
     players: (state) => {
@@ -17,6 +31,9 @@ const store = new Vuex.Store({
     },
     scrapedPlayers: (state) => {
       return state.scrapedPlayers;
+    },
+    user: (state) => {
+      return state.user;
     },
   },
   mutations: {
@@ -26,8 +43,23 @@ const store = new Vuex.Store({
     setScrapedPlayers(state, newPlayers) {
       state.scrapedPlayers = newPlayers;
     },
+    setUser(state, user) {
+      if (user !== null) {
+        sessionStorage.setItem("token", user.token);
+        sessionStorage.setItem("user", user.Username);
+      }
+      state.user = user;
+    },
   },
   actions: {
+    //------------ User ---------------
+    async login(state, user) {
+      return axios
+        .post("user/authenticate", user)
+        .then((response) => state.commit("setUser", response.data))
+        .catch((err) => console.log(err));
+    },
+    //------------ Player ---------------
     async loadAllPlayers() {
       return axios
         .get("stats/players")
@@ -62,6 +94,20 @@ const store = new Vuex.Store({
         })
         .catch((err) => console.log(err));
     },
+    async createPlayer(state, newPlayer) {
+      return axios
+        .post("stats/players", newPlayer)
+        .then(() => {
+          var result = this.state.players.findIndex((obj) => {
+            return obj.player_id === newPlayer.player_id;
+          });
+          const newPlayers = this.state.players;
+          newPlayers[result] = newPlayer;
+          state.commit("setPlayers", newPlayers);
+        })
+        .catch((err) => console.log(err));
+    },
+    //------------ Script ---------------
     async activateScript(state, link) {
       console.log(link);
       return axios

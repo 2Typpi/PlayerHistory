@@ -8,18 +8,20 @@ import {
   editPlayerService,
   deletePlayerService,
 } from "../repository/statService.js";
+import authorize from "../middleware/authorize.js";
+
 import { spawn } from "child_process";
 import { isUri } from "valid-url";
 var router = Router();
 
-router.get("/script", activateScript);
-router.put("/update", addStats);
+router.get("/script", authorize(), activateScript);
+router.put("/update", authorize(), addStats);
 
-router.post("/players", createPlayer);
-router.get("/players", loadAllPlayers);
-router.get("/players/:uuid", loadPlayer);
-router.put("/players/:uuid", editPlayer);
-router.delete("/players/:uuid", deletePlayer);
+router.post("/players", authorize(), createPlayer);
+router.get("/players", authorize(), loadAllPlayers);
+router.get("/players/:uuid", authorize(), loadPlayer);
+router.put("/players/:uuid", authorize(), editPlayer);
+router.delete("/players/:uuid", authorize(), deletePlayer);
 
 export default router;
 
@@ -58,7 +60,6 @@ function createPlayer(req, res, next) {
 }
 
 function loadPlayer(req, res, next) {
-  console.log(req.params.uuid);
   getPlayerById(req.params.uuid)
     .then((stats) => (stats ? res.json(stats) : res.sendStatus(404)))
     .catch((err) => next(err));
@@ -80,10 +81,7 @@ function addStats(req, res, next) {
   let players = req.body;
   players.forEach((player) => {
     getPlayerByName(player.name)
-      .then(async (dbPlayer) => {
-        console.log(dbPlayer);
-        await updatePlayer(dbPlayer, player);
-      })
+      .then(async (dbPlayer) => await updatePlayer(dbPlayer, player))
       .catch((err) => next(err));
   });
   res.sendStatus(200);

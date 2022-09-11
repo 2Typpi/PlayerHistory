@@ -1,5 +1,8 @@
 <template>
-  <div class="home">
+  <div v-if="this.$store.getters.user === null">
+    <MissingRole></MissingRole>
+  </div>
+  <div v-else class="home">
       <v-data-table
       :headers="headers"
       :items="this.players"
@@ -10,12 +13,12 @@
         <v-toolbar
           flat
         >
-          <v-toolbar-title>Player List</v-toolbar-title>
+          <v-toolbar-title>Spieler Liste</v-toolbar-title>
           <v-spacer></v-spacer>
           <v-text-field
             v-model="search"
             append-icon="mdi-magnify"
-            label="Search"
+            label="Suche"
             single-line
             hide-details
           ></v-text-field>
@@ -32,7 +35,7 @@
                 v-bind="attrs"
                 v-on="on"
               >
-                New Item
+                Neuer Spieler
               </v-btn>
             </template>
             <v-card>
@@ -94,14 +97,14 @@
                   text
                   @click="close"
                 >
-                  Cancel
+                  Abbrechen
                 </v-btn>
                 <v-btn
                   color="blue darken-1"
                   text
                   @click="save"
                 >
-                  Save
+                  Speichern
                 </v-btn>
               </v-card-actions>
             </v-card>
@@ -142,6 +145,7 @@
 </template>
 
 <script>
+import MissingRole from '@/components/MissingRole';
 
 export default {
   name: 'home-view',
@@ -157,7 +161,7 @@ export default {
           { text: 'Gelbe Karten', value: 'YellowCards' },
           { text: 'Gelb-Rote Karten', value: 'YellowRedCards' },
           { text: 'Rote Karten', value: 'RedCards' },
-          { text: 'Actions', value: 'actions', sortable: false },
+          { text: 'Aktionen', value: 'actions', sortable: false },
         ],
       search: '',
       editedIndex: -1,
@@ -183,7 +187,7 @@ export default {
   },
   computed: {
     formTitle () {
-      return this.editedIndex === -1 ? 'New Item' : 'Edit Item'
+      return this.editedIndex === -1 ? 'Neuer Spieler' : 'Editiere Spieler'
     },
   },
   watch: {
@@ -195,6 +199,7 @@ export default {
     },
   },
   components: {
+    MissingRole
   },
   async created() {
     await this.$store.dispatch("loadAllPlayers");
@@ -240,7 +245,7 @@ export default {
         Object.assign(this.players[this.editedIndex], this.editedItem)
         this.$store.dispatch("editPlayer", this.editedItem)
       } else {
-        //TODO: Add Player in DB
+        this.$store.dispatch("createPlayer", this.editedItem)
         this.players.push(this.editedItem)
       }
       this.close()

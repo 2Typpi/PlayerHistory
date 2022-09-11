@@ -13,24 +13,24 @@ sequelizeCon.sync();
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
-//const jwt = require("./helper/jwt");
 
 import statsRouter from "./routes/stats.js";
+import userRouter from "./routes/user.js";
 
 const app = express();
 
 app.set("views", join(__dirname, "views"));
 app.set("view engine", "ejs");
 
-//app.use(jwt());
 app.use(cors());
 app.use(express.json());
+app.use(cookieParser());
 app.use(express.urlencoded({ extended: false }));
-//app.use(cookieParser);
 app.use(express.static(join(__dirname, "public")));
 console.log(join(__dirname, "views"));
 
 app.use("/stats", statsRouter);
+app.use("/user", userRouter);
 
 app.use(function (req, res, next) {
   next(createError(404));

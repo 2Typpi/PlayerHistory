@@ -1,14 +1,22 @@
 <template>
-  <div>
+  <div v-if="this.$store.getters.user === null">
+    <MissingRole></MissingRole>
+  </div>
+  <div v-else>
     <h1>Daten vom BFV holen</h1>
-    <v-text-field
-    v-model="link"
-    label="Link zum Spiel in BFV"
-    single-line></v-text-field>
-    <v-btn color="primary"
-    v-on:click="scrapeStats">Lade Statistiken</v-btn>
-    <v-btn color="primary"
-    v-on:click="saveToDb">Speichern</v-btn>
+    <v-card class="d-flex align-center pa-2 justify-space-around" flat>
+      <v-row>
+        <v-col cols="10">
+          <v-text-field v-model="link" label="Link zum Spiel in BFV"></v-text-field>
+        </v-col>
+
+        <v-col cols="2">
+          <v-btn color="primary" v-on:click="scrapeStats">Lade Statistiken</v-btn>
+          <v-btn color="primary" v-on:click="saveToDb">Speichern</v-btn>
+        </v-col>
+      </v-row>
+    </v-card>
+
     <v-data-table
       :headers="headers"
       :items="this.players"
@@ -19,7 +27,7 @@
         <v-toolbar
           flat
         >
-          <v-toolbar-title>Player List</v-toolbar-title>
+          <v-toolbar-title>Geladene Spieler</v-toolbar-title>
           <v-spacer></v-spacer>
           <v-text-field
             v-model="search"
@@ -41,7 +49,7 @@
                 v-bind="attrs"
                 v-on="on"
               >
-                New Item
+                Neuer Spieler
               </v-btn>
             </template>
             <v-card>
@@ -188,6 +196,8 @@
 </template>
 
 <script>
+import MissingRole from '@/components/MissingRole';
+
 export default {
   name: 'scrape-view',
   data() {
@@ -229,6 +239,9 @@ export default {
       snackbarColor: "",
       text: "",
     }
+  },
+  components: {
+    MissingRole
   },
   computed: {
     formTitle () {

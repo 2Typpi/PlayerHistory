@@ -1,21 +1,23 @@
-import router from "express";
+import { Router } from "express";
 import Joi from "joi";
-import validateRequest from "_middleware/validate-request";
-import authorize from "_middleware/authorize";
-import { authenticate, getAll, getById } from "../repository/userService.js";
+import validateRequest from "../middleware/validate-request.js";
+import authorize from "../middleware/authorize.js";
+import { authenticate, getAll, getById, create } from "../repository/userService.js";
 
+var router = Router();
 // routes
 router.post("/authenticate", authenticateSchema, userAuthenticate);
+router.post("/register", registerSchema, register);
 router.get("/", authorize(), userGetAll);
 router.get("/current", authorize(), getCurrent);
 router.get("/:id", authorize(), userGetById);
 
-module.exports = router;
+export default router;
 
 function authenticateSchema(req, res, next) {
   const schema = Joi.object({
-    username: Joi.string().required(),
-    password: Joi.string().required(),
+    Username: Joi.string().required(),
+    Password: Joi.string().required(),
   });
   validateRequest(req, next, schema);
 }
@@ -39,5 +41,19 @@ function getCurrent(req, res, next) {
 function userGetById(req, res, next) {
   getById(req.params.id)
     .then((user) => res.json(user))
+    .catch(next);
+}
+
+function registerSchema(req, res, next) {
+  const schema = Joi.object({
+    Username: Joi.string().required(),
+    Password: Joi.string().min(5).required(),
+  });
+  validateRequest(req, next, schema);
+}
+
+function register(req, res, next) {
+  create(req.body)
+    .then(() => res.json({ message: "Registration successful" }))
     .catch(next);
 }

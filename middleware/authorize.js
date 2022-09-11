@@ -1,25 +1,32 @@
-import jwt from "express-jwt";
-import { secret } from "config.json";
-import { User } from "_helpers/db";
+import { expressjwt } from "express-jwt";
+// import { secret } from "../config.json";
+import { User } from "../models/user.js";
 
 export default authorize;
 
 function authorize() {
-  return [
-    // authenticate JWT token and attach decoded token to request as req.user
-    jwt({ secret, algorithms: ["HS256"] }),
+  // authenticate JWT token and attach decoded token to request as req.user
+  return expressjwt({
+    secret: "Big Secret",
+    algorithms: ["sha1", "RS256", "HS256"],
+    isRevoked: isRevoked2,
+  }).unless({
+    path: [
+      // public routes that don't require authentication
+      "/user/authenticate",
+      "/user/register",
+    ],
+    ext: ["png", "jpg", "css", "js", "woff2", "woff", "ico", "ttf", "html", "map"],
+  });
+}
 
-    // attach full user record to request object
-    async (req, res, next) => {
-      // get user with id from token 'sub' (subject) property
-      const user = await User.findByPk(req.user.sub);
+async function isRevoked2(req, token) {
+  const user = await User.findByPk(token.payload.sub);
 
-      // check user still exists
-      if (!user) return res.status(401).json({ message: "Unauthorized" });
+  // revoke token if user no longer exists
+  if (!user) {
+    return true;
+  }
 
-      // authorization successful
-      req.user = user.get();
-      next();
-    },
-  ];
+  return false;
 }

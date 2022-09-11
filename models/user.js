@@ -1,31 +1,31 @@
 "use strict";
 
-import { DataTypes } from "sequelize";
+import Sequelize from "sequelize";
+import { sequelizeCon } from "../utils/database.js";
 
-export default model;
+const options = {
+  defaultScope: {
+    // exclude hash by default
+    attributes: { exclude: ["hash"] },
+  },
+  scopes: {
+    // include hash with this scope
+    withHash: { attributes: {} },
+  },
+};
 
-function model() {
-  const attributes = {
+export const User = sequelizeCon.define(
+  "user",
+  {
     user_id: {
       type: Sequelize.UUID,
       defaultValue: Sequelize.UUIDV4,
       allowNull: false,
       primaryKey: true,
     },
-    username: { type: DataTypes.STRING, allowNull: false },
-    hash: { type: DataTypes.STRING, allowNull: false },
-  };
 
-  const options = {
-    defaultScope: {
-      // exclude hash by default
-      attributes: { exclude: ["hash"] },
-    },
-    scopes: {
-      // include hash with this scope
-      withHash: { attributes: {} },
-    },
-  };
-
-  return sequelizeCon.define("user", attributes, options);
-}
+    Username: { type: Sequelize.STRING, allowNull: false },
+    Hash: { type: Sequelize.STRING, allowNull: false },
+  },
+  options
+);
