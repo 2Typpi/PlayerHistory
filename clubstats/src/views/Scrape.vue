@@ -10,7 +10,7 @@
           <v-text-field v-model="link" label="Link zum Spiel in BFV"></v-text-field>
         </v-col>
 
-        <v-col cols="2">
+        <v-col cols="2" class="d-flex align-center">
           <v-btn color="primary" v-on:click="scrapeStats">Lade Statistiken</v-btn>
           <v-btn color="primary" v-on:click="saveToDb">Speichern</v-btn>
         </v-col>
@@ -27,7 +27,7 @@
         <v-toolbar
           flat
         >
-          <v-toolbar-title>Geladene Spieler</v-toolbar-title>
+        <h2>Spieler aus dem Spiel</h2>
           <v-spacer></v-spacer>
           <v-text-field
             v-model="search"

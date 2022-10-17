@@ -23,7 +23,7 @@
 
       <v-btn to="/scrape">
         BFV Daten
-        <v-icon right dark>mdi-cloud-download</v-icon>
+        <v-icon right>mdi-cloud-download</v-icon>
       </v-btn>
 
       <v-btn v-on:click="logout">
@@ -72,3 +72,10 @@ export default {
   },
 };
 </script>
+
+<style>
+  .v-btn {
+    margin-left: 15px;
+
+  }
+</style>

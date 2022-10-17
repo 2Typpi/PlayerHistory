@@ -8,11 +8,16 @@ var router = Router();
 // routes
 router.post("/authenticate", authenticateSchema, userAuthenticate);
 router.post("/register", registerSchema, register);
+router.get("/register/toggle", authorize(), registerEnableToggle);
 router.get("/", authorize(), userGetAll);
 router.get("/current", authorize(), getCurrent);
 router.get("/:id", authorize(), userGetById);
 
 export default router;
+
+// Per Konstante activate/deactivate register
+
+var registerEnabled = false;
 
 function authenticateSchema(req, res, next) {
   const schema = Joi.object({
@@ -53,7 +58,16 @@ function registerSchema(req, res, next) {
 }
 
 function register(req, res, next) {
-  create(req.body)
-    .then(() => res.json({ message: "Registration successful" }))
-    .catch(next);
+  if (registerEnabled) {
+    create(req.body)
+      .then(() => res.json({ message: "Registration successful" }))
+      .catch(next);
+  } else {
+    res.json({ message: "Disabled" });
+  }
+}
+
+function registerEnableToggle(req, res, next) {
+  registerEnabled = !registerEnabled;
+  res.json({ message: "Toggled" });
 }

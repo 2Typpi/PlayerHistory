@@ -2,6 +2,8 @@ import cookieParser from "cookie-parser";
 import express from "express";
 import createError from "http-errors";
 import cors from "cors";
+import compression from "compression";
+import helmet from "helmet";
 import { fileURLToPath } from "url";
 import { dirname, join } from "path";
 
@@ -23,6 +25,8 @@ app.set("views", join(__dirname, "views"));
 app.set("view engine", "ejs");
 
 app.use(cors());
+app.use(helmet());
+app.use(compression());
 app.use(express.json());
 app.use(cookieParser());
 app.use(express.urlencoded({ extended: false }));

@@ -40,6 +40,7 @@ export async function getPlayerByName(name) {
 
 export async function createPlayerService(player) {
   const createdPlayer = await Player.create(player);
+  console.log(createdPlayer);
   return createdPlayer;
 }
 
