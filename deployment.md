@@ -21,7 +21,16 @@ For production build navigate into the clubstats folder and run
 
 > npm run build
  
-Now copy the dist folder into **/var/www/clubstats/**. The Code is now deployed and ready. You can already start the node server in a pm2 task: 
+Now copy the dist folder into **/var/www/clubstats/**. The Code is now deployed and ready.  
+Make sure that python is installed if python3 is used change the code in: PlayerHistory/routes/stats.js to use python3 command. Install all packaged:
+
+> pip install -r requirements.txt
+
+Test python script:
+
+> python bfv_players.py \<link>
+
+You can already start the node server in a pm2 task: 
 
 > pm2 start server.js
 
@@ -61,4 +70,4 @@ server {
 
 This config must be placed in the **/etc/nginx/sites-available** folder. To check the config use the **nginx -t** command and now restart the nginx service with **systemctl restart nginx**. 
 
-If the server is not reachable make sure to open all the needed Ports via: **ufw allow 'Nginx Full'**
+If the server is not reachable, make sure to open all the needed Ports via: **ufw allow 'Nginx Full'**
