@@ -17,7 +17,7 @@ export default router;
 
 // Per Konstante activate/deactivate register
 
-var registerEnabled = false;
+var registerEnabled = true;
 
 function authenticateSchema(req, res, next) {
   const schema = Joi.object({
