@@ -27,18 +27,26 @@ export default router;
 
 //Start python webscraper
 function activateScript(req, res, next) {
-  // console.log(isWebUri(req.query.link));
-  // if (isWebUri(req.query.link)) {
-  //   res.sendStatus(400);
-  // }
+  //Check if URL is valid
+  if (!isUri(req.query.link)) {
+    res.sendStatus(400);
+    return;
+  }
+
+  //Spawn python script
   let resultString = "";
   const python = spawn("python", ["python/bfv_players.py", req.query.link]);
+
+  //Read all printed statements
   python.stdout.on("data", function (data) {
     resultString = data.toString();
   });
+
+  //Send players to frontend
   python.on("close", (code) => {
     if (resultString === "" || code !== 0) {
-      res.sendStatus(404);
+      res.sendStatus(400);
+      return;
     }
     let scrapedPlayers = JSON.parse(resultString);
     res.json(scrapedPlayers);
