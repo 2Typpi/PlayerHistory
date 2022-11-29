@@ -3,6 +3,7 @@
     <MissingRole></MissingRole>
   </div>
   <div v-else>
+    <LoadingOverlay></LoadingOverlay>
     <h1>Daten vom BFV holen</h1>
     <v-card class="d-flex align-center pa-2 justify-space-around" flat>
       <v-row>
@@ -197,6 +198,7 @@
 
 <script>
 import MissingRole from '@/components/MissingRole';
+import LoadingOverlay from '@/components/LoadingOverlay';
 
 export default {
   name: 'scrape-view',
@@ -241,7 +243,8 @@ export default {
     }
   },
   components: {
-    MissingRole
+    MissingRole,
+    LoadingOverlay
   },
   computed: {
     formTitle () {

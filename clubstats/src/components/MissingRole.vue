@@ -5,7 +5,7 @@
 </template>
 
 <script>
-  export default {
-    name: 'MissingRole',
-  }
+export default {
+  name: 'MissingRole',
+}
 </script>

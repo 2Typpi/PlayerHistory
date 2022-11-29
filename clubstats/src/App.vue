@@ -37,6 +37,7 @@
         class="spacing-playground pa-6"
         fluid
       >
+        <ErrorAlert></ErrorAlert>
         <router-view/>
       </v-container>
     </v-main>
@@ -44,6 +45,7 @@
 </template>
 
 <script>
+import ErrorAlert from "@/components/ErrorAlert"
 
 export default {
   name: 'App',
@@ -54,14 +56,12 @@ export default {
   methods: {
     logout() {
       sessionStorage.clear();
-      console.log(sessionStorage);
       this.$store.commit("setUser", null);
       this.$router.push('/');
-    }
+    },
   },
   mounted() {
     const user = sessionStorage.getItem("user");
-    console.log(user)
     if (user !== "null" && user !== null) {
       const user = {
         Username: sessionStorage.getItem("user"),
@@ -70,6 +70,9 @@ export default {
       this.$store.commit("setUser", user);
     }
   },
+  components: {
+    ErrorAlert
+  }
 };
 </script>
 

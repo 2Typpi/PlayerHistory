@@ -3,13 +3,13 @@
     <MissingRole></MissingRole>
   </div>
   <div v-else class="home">
-      <v-data-table
+    <v-data-table
       :headers="headers"
       :items="this.players"
       :search="search"
       :items-per-page = "-1"
       hide-default-footer>
-        <template v-slot:top>
+      <template v-slot:top>
         <v-toolbar
           flat
         >
@@ -151,6 +151,7 @@ export default {
   name: 'home-view',
   data() {
     return {
+      overlay: true,
       dialog: false,
       dialogDelete: false,
       players: [],
