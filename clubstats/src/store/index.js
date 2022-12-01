@@ -95,7 +95,7 @@ const store = new Vuex.Store({
         .get("stats/players")
         .then((response) => {
           this.state.players = response.data;
-          this.$store.state.commit("stopLoading");
+          this.state.commit("stopLoading");
         })
         .catch((err) => {
           state.commit("stopLoading");
@@ -123,7 +123,7 @@ const store = new Vuex.Store({
     },
 
     async editPlayer(state, editedPlayer) {
-      this.$store.state.commit("startLoading");
+      this.state.commit("startLoading");
       return axios
         .put(`stats/players/${editedPlayer.player_id}`, editedPlayer)
         .then(() => {
@@ -134,7 +134,7 @@ const store = new Vuex.Store({
           const newPlayers = this.state.players;
           newPlayers[result] = editedPlayer;
           state.commit("setPlayers", newPlayers);
-          this.$store.state.commit("stopLoading");
+          this.state.commit("stopLoading");
         })
         .catch((err) => console.log(err));
     },
