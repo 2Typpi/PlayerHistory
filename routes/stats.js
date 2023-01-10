@@ -61,7 +61,6 @@ function loadAllPlayers(req, res, next) {
 }
 
 function createPlayer(req, res, next) {
-  console.log(req.body);
   createPlayerService(req.body)
     .then((statistic) => (statistic ? res.json(statistic) : res.sendStatus(404)))
     .catch((err) => next(err));

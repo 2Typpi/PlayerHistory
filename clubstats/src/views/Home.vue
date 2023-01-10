@@ -220,7 +220,6 @@ export default {
     },
 
     deleteItemConfirm() {
-      this.players.splice(this.editedIndex, 1)
       this.$store.dispatch("delPlayer", this.editedItem.player_id)
       this.closeDelete()
     },
