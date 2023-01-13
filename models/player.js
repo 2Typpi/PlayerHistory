@@ -18,6 +18,11 @@ export const Player = sequelizeCon.define("player", {
   YellowRedCards: { type: Sequelize.INTEGER, allowNull: false },
   RedCards: { type: Sequelize.INTEGER, allowNull: false },
 
+  //ForeignKey to Club
+  club_id: {
+    type: Sequelize.UUID,
+  },
+
   createdAt: Sequelize.DATE,
   updatedAt: Sequelize.DATE,
 });
