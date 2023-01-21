@@ -18,6 +18,7 @@ const __dirname = dirname(__filename);
 
 import statsRouter from "./routes/stats.js";
 import userRouter from "./routes/user.js";
+import clubRouter from "./routes/club.js";
 
 const app = express();
 
@@ -35,6 +36,7 @@ console.log(join(__dirname, "views"));
 
 app.use("/stats", statsRouter);
 app.use("/user", userRouter);
+app.use("/club", clubRouter);
 
 app.use(function (req, res, next) {
   next(createError(404));

@@ -203,7 +203,8 @@ export default {
     MissingRole
   },
   async created() {
-    await this.$store.dispatch("loadAllPlayers");
+    await this.$store.dispatch("loadClub");
+    await this.$store.dispatch("loadAllPlayersOfClub");
     this.players = this.$store.getters.players;
   },
   methods: {

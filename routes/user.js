@@ -16,7 +16,6 @@ router.get("/:id", authorize(), userGetById);
 export default router;
 
 // Per Konstante activate/deactivate register
-
 var registerEnabled = true;
 
 function authenticateSchema(req, res, next) {

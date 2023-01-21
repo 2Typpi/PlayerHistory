@@ -50,7 +50,6 @@ export async function create(params) {
     newUser.Hash = await bcrypt.hash(params.Password, 10);
   }
 
-  console.log(newUser);
   // save user
   await User.create(newUser);
 }

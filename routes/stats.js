@@ -18,7 +18,7 @@ router.get("/script", authorize(), activateScript);
 router.put("/update", authorize(), addStats);
 
 router.post("/players", authorize(), createPlayer);
-router.get("/players", authorize(), loadAllPlayers);
+router.get("/players/:name", authorize(), loadAllPlayers);
 router.get("/players/:uuid", authorize(), loadPlayer);
 router.put("/players/:uuid", authorize(), editPlayer);
 router.delete("/players/:uuid", authorize(), deletePlayer);
@@ -55,13 +55,15 @@ function activateScript(req, res, next) {
 
 //CRUD for players
 function loadAllPlayers(req, res, next) {
-  getAll()
+  getAll(req.params.name)
     .then((statistic) => (statistic ? res.json(statistic) : res.sendStatus(404)))
     .catch((err) => next(err));
 }
 
 function createPlayer(req, res, next) {
-  createPlayerService(req.body)
+  let player = req.body.player;
+  let club = req.body.club;
+  createPlayerService(player, club)
     .then((statistic) => (statistic ? res.json(statistic) : res.sendStatus(404)))
     .catch((err) => next(err));
 }
@@ -85,9 +87,10 @@ function editPlayer(req, res, next) {
 }
 
 function addStats(req, res, next) {
-  let players = req.body;
+  let players = req.body.players;
+  let club = req.body.club;
   players.forEach((player) => {
-    getPlayerByName(player.name)
+    getPlayerByName(player.name, club)
       .then(async (dbPlayer) => await updatePlayer(dbPlayer, player))
       .catch((err) => next(err));
   });

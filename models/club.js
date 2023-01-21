@@ -2,6 +2,7 @@
 
 import Sequelize from "sequelize";
 import { sequelizeCon } from "../utils/database.js";
+import { User } from "./user.js";
 
 export const Club = sequelizeCon.define("club", {
   club_id: {
@@ -18,6 +19,10 @@ export const Club = sequelizeCon.define("club", {
   //ForeignKey to User
   user_id: {
     type: Sequelize.UUID,
+    references: {
+      model: User,
+      key: "user_id",
+    },
   },
 
   createdAt: Sequelize.DATE,
