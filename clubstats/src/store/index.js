@@ -140,6 +140,7 @@ const store = new Vuex.Store({
     },
 
     async delPlayer(state, uuid) {
+      console.log(uuid);
       return axios
         .delete(`stats/players/${uuid}`)
         .then(() => {
@@ -172,8 +173,16 @@ const store = new Vuex.Store({
     },
 
     async createPlayer(state, newPlayer) {
+      //Remove empty player_id used for easy way of editing players
+      delete newPlayer.player_id;
+
+      const reqbody = {
+        "club": this.state.club.Name,
+        "player": newPlayer,
+      };
+      console.log(reqbody);
       return axios
-        .post("stats/players", newPlayer)
+        .post("stats/players", reqbody)
         .then(() => {
           var result = this.state.players.findIndex((obj) => {
             return obj.player_id === newPlayer.player_id;
