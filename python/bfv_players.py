@@ -15,12 +15,6 @@ class bcolors:
     BOLD = '\033[1m'
     UNDERLINE = '\033[4m'
 
-
-#URL = "https://www.bfv.de/spiele/tsv-oberbeuren-gegen-tsv-1862-babenhausen-am-24-07-2021/02F3BQHVKC000000VS5489B4VVD6BKS7"
-#URL = "https://www.bfv.de/spiele/tsv-babenhausen-2-gegen-fc-heimertingen-2-am-20-11-2021/02F3JU3AQK000000VS5489B3VTRLPP90"
-#URL = "https://www.bfv.de/spiele/tsv-mindelheim-gegen-tsv-1862-babenhausen-am-02-10-2021/02EV546684000000VS5489B4VT8SVH36"
-#URL = "https://www.bfv.de/spiele/tsv-babenhausen-3-gegen-sv-greimeltshofen-2-am-08-08-2021/02F3K2EQC0000000VS5489B3VTRLPP90"
-
 class PlayerX:
     
     def __init__(self, name):
@@ -57,18 +51,16 @@ def get_lineup_url(main_Page_Soup):
         lineup_url = job_element["data-api-load"]
 
     if not lineup_url:
-        # print(bcolors.FAIL +
-        #       "Warning: No active frommets remain. Continue?" + bcolors.ENDC)
         return None
     return ("https://www.bfv.de" + lineup_url)
 
 
-def get_starting_lineup(lineup_Soup):
+def get_starting_lineup(lineup_Soup, clubname1, clubname2, clubname3):
     startLineup = []
     teams = lineup_Soup.find_all("figure")
     i = 0
     for team in teams:
-        if(team["data-img-alt"] != "TSV 1862 Babenhausen" and team["data-img-alt"] != "TSV Babenhausen 2" and team["data-img-alt"] != "TSV Babenhausen 3"):
+        if(team["data-img-alt"] != clubname1 and team["data-img-alt"] != clubname2 and team["data-img-alt"] != clubname3):
             continue
         playerdivs = team.parent.parent.parent.parent.parent.parent
         players = playerdivs.find_all_next("a")
@@ -159,7 +151,7 @@ def set_cards(soup):
     statistics.update({"YellowCards": yellow})
 
 
-def is_home(soup):
+def is_home(soup, clubname1, clubname2, clubname3):
     homeTeamDiv = soup.find(
         "div", class_="bfv-matchdata-result__team-wrapper bfv-matchdata-result__team-wrapper--team0")
     if homeTeamDiv == None:
@@ -170,7 +162,7 @@ def is_home(soup):
     if homeTeamImg == None:
         return None
 
-    if(homeTeamImg["data-img-alt"] != "TSV 1862 Babenhausen" and homeTeamImg["data-img-alt"] != "TSV Babenhausen 2" and homeTeamImg["data-img-alt"] != "TSV Babenhausen 3"):
+    if(homeTeamImg["data-img-alt"] != clubname1 and homeTeamImg["data-img-alt"] != clubname2 and homeTeamImg["data-img-alt"] != clubname3):
         return "away"
     return "home"
 
@@ -197,11 +189,11 @@ def create_player_objects(stats):
                 player.red_cards += 1
     return scraped_player
 
-def gui_starter(manual_url):
+def gui_starter(manual_url, clubname1, clubname2, clubname3):
     mainPageSoup = get_soup(manual_url)
 
     # Set Home or Away for match events
-    home = is_home(mainPageSoup)
+    home = is_home(mainPageSoup, clubname1, clubname2, clubname3)
     if(home == None):
         return -1
 
@@ -216,7 +208,7 @@ def gui_starter(manual_url):
     if(lineupSoup == None):
         return -1
 
-    firstEleven = get_starting_lineup(lineupSoup)
+    firstEleven = get_starting_lineup(lineupSoup, clubname1, clubname2, clubname3)
     statistics.update({"FirstEleven": firstEleven})
 
     substitudes = get_substitutions(mainPageSoup)
@@ -237,4 +229,17 @@ def gui_starter(manual_url):
 
 
 if __name__ == '__main__':
-    gui_starter(sys.argv[1])
+    # Filler because empty names would match everytime
+    clubname1 = "Filler"
+    clubname2 = "Filler"
+    clubname3 = "Filler"
+    if(len(sys.argv) > 2):
+        clubname1 = sys.argv[2].replace("_", " ")
+    
+    if(len(sys.argv) > 3):
+        clubname2 = sys.argv[3].replace("_", " ")
+    
+    if(len(sys.argv) > 4):
+        clubname3 = sys.argv[4].replace("_", " ")
+    
+    gui_starter(sys.argv[1], clubname1, clubname2, clubname3)

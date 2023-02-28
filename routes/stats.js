@@ -1,5 +1,6 @@
 import { Router } from "express";
 import {
+  findClub,
   getAll,
   getPlayerById,
   getPlayerByName,
@@ -14,7 +15,7 @@ import { spawn } from "child_process";
 import { isUri } from "valid-url";
 var router = Router();
 
-router.get("/script", authorize(), activateScript);
+router.post("/script", authorize(), activateScript);
 router.put("/update", authorize(), addStats);
 
 router.post("/players", authorize(), createPlayer);
@@ -26,16 +27,28 @@ router.delete("/players/:uuid", authorize(), deletePlayer);
 export default router;
 
 //Start python webscraper
-function activateScript(req, res, next) {
+async function activateScript(req, res, next) {
+  const club = await findClub(req.body.club);
+
   //Check if URL is valid
-  if (!isUri(req.query.link)) {
+  if (!isUri(req.body.link)) {
     res.sendStatus(400);
     return;
   }
 
+  let clubname = club.Name.replace(/ /g, "_");
+  let secondTeam = club.SecondTeam.replace(/ /g, "_");
+  let ThirdTeam = club.ThirdTeam.replace(/ /g, "_");
+
   //Spawn python script
   let resultString = "";
-  const python = spawn("python", ["python/bfv_players.py", req.query.link]);
+  const python = spawn("python", [
+    "python/bfv_players.py",
+    req.body.link,
+    clubname,
+    secondTeam,
+    ThirdTeam,
+  ]);
 
   //Read all printed statements
   python.stdout.on("data", function (data) {

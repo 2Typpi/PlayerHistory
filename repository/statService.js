@@ -43,7 +43,7 @@ export async function getPlayerByName(name, club_name) {
   return player;
 }
 
-async function findClub(club_name) {
+export async function findClub(club_name) {
   const club = await Club.findOne({ where: { Name: club_name } });
   if (club === null) {
     throw 'Club "' + club_name + '" does not exist';

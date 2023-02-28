@@ -1,37 +1,6 @@
 <template>
   <v-app>
-    <v-app-bar
-      v-if="this.$store.getters.user !== null"
-      app
-      color="primary"
-      dark
-    >
-      <div class="d-flex align-center">
-        <a href="#/home">
-          <v-img
-            alt="TSV Babenhausen Wappen"
-            class="shrink mr-2"
-            contain
-            src="../public/images/Babenhausen.png"
-            transition="scale-transition"
-            width="40"
-          />
-        </a>
-        <h1>TSV Babenhausen - Club History</h1>
-      </div>
-      <v-spacer></v-spacer>
-
-      <v-btn to="/scrape">
-        BFV Daten
-        <v-icon right>mdi-cloud-download</v-icon>
-      </v-btn>
-
-      <v-btn v-on:click="logout">
-        Logout
-      </v-btn>
-
-    </v-app-bar>
-
+    <NavBar />
     <v-main>
       <v-container
         class="spacing-playground pa-6"
@@ -46,6 +15,7 @@
 
 <script>
 import ErrorAlert from "@/components/ErrorAlert"
+import NavBar from "@/components/NavBar"
 
 export default {
   name: 'App',
@@ -53,13 +23,6 @@ export default {
   data: () => ({
     //
   }),
-  methods: {
-    logout() {
-      sessionStorage.clear();
-      this.$store.commit("setUser", null);
-      this.$router.push('/');
-    },
-  },
   mounted() {
     const user = sessionStorage.getItem("user");
     if (user !== "null" && user !== null) {
@@ -71,7 +34,8 @@ export default {
     }
   },
   components: {
-    ErrorAlert
+    ErrorAlert,
+    NavBar
   }
 };
 </script>

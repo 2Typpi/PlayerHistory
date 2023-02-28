@@ -22,8 +22,10 @@ axios.interceptors.request.use(
 const store = new Vuex.Store({
   state: {
     club: null,
+    allClubs: [],
     players: [],
     scrapedPlayers: [],
+    allUsers: [],
     user: null,
     error: false,
     errMsg: "",
@@ -43,14 +45,29 @@ const store = new Vuex.Store({
       return state.user;
     },
 
+    allUsers: (state) => {
+      return state.allUsers;
+    },
+
     club: (state) => {
       return state.club;
+    },
+
+    allClubs: (state) => {
+      return state.allClubs;
     },
   },
 
   mutations: {
     setClub(state, club) {
+      if (club !== null) {
+        sessionStorage.setItem("clubname", club.Name);
+      }
       state.club = club;
+    },
+
+    setAllClubs(state, allClubs) {
+      state.allClubs = allClubs;
     },
 
     setPlayers(state, newPlayers) {
@@ -67,6 +84,10 @@ const store = new Vuex.Store({
         sessionStorage.setItem("user", user.Username);
       }
       state.user = user;
+    },
+
+    setAllUser(state, allUsers) {
+      state.allUsers = allUsers;
     },
 
     raiseErrMsg(state, errMsg) {
@@ -94,8 +115,16 @@ const store = new Vuex.Store({
       return axios
         .post("user/authenticate", user)
         .then((response) => {
-          console.log("user2: " + state.user);
           state.commit("setUser", response.data);
+        })
+        .catch((err) => console.log(err));
+    },
+
+    async loadAllUsers(state) {
+      return axios
+        .get("user")
+        .then((response) => {
+          state.commit("setAllUser", response.data);
         })
         .catch((err) => console.log(err));
     },
@@ -107,6 +136,24 @@ const store = new Vuex.Store({
         .get(`club/user/${username}`)
         .then((response) => {
           state.commit("setClub", response.data);
+          state.commit("stopLoading");
+        })
+        .catch((err) => {
+          state.commit("stopLoading");
+          state.commit(
+            "raiseErrMsg",
+            "Ein Fehler beim Laden der Spieler ist aufgetreten. Bitte versuchen sie es erneut oder melden sie den Vorfall."
+          );
+          console.log(err);
+        });
+    },
+
+    async loadAllClubs(state) {
+      state.commit("startLoading");
+      return await axios
+        .get(`club/`)
+        .then((response) => {
+          state.commit("setAllClubs", response.data);
           state.commit("stopLoading");
         })
         .catch((err) => {
@@ -199,7 +246,7 @@ const store = new Vuex.Store({
     async activateScript(state, link) {
       state.commit("startLoading");
       return axios
-        .get("stats/script", { params: { link: link } })
+        .post("stats/script", { link: link, club: sessionStorage.getItem("clubname") })
         .then((response) => {
           state.commit("stopLoading");
           state.commit("setScrapedPlayers", response.data);
@@ -212,8 +259,12 @@ const store = new Vuex.Store({
     },
 
     async addToStats(state, players) {
+      const reqbody = {
+        "club": sessionStorage.getItem("clubname"),
+        "players": players,
+      };
       return axios
-        .put("stats/update", players)
+        .put("stats/update", reqbody)
         .then(() => {
           state.commit("setScrapedPlayers", []);
         })
