@@ -2,7 +2,14 @@ import { Router } from "express";
 import Joi from "joi";
 import validateRequest from "../middleware/validate-request.js";
 import authorize from "../middleware/authorize.js";
-import { authenticate, getAll, getById, create } from "../repository/userService.js";
+import {
+  authenticate,
+  getAll,
+  getById,
+  create,
+  editUserService,
+  deleteUser,
+} from "../repository/userService.js";
 
 var router = Router();
 // routes
@@ -12,6 +19,8 @@ router.get("/register/toggle", authorize(), registerEnableToggle);
 router.get("/", authorize(), userGetAll);
 router.get("/current", authorize(), getCurrent);
 router.get("/:id", authorize(), userGetById);
+router.put("/:uuid", authorize(), editUser);
+router.delete("/:uuid", authorize(), userDelete);
 
 export default router;
 
@@ -69,4 +78,24 @@ function register(req, res, next) {
 function registerEnableToggle(req, res, next) {
   registerEnabled = !registerEnabled;
   res.json({ message: "Toggled" });
+}
+
+function editUser(req, res, next) {
+  const correctedUser = req.body;
+  const searchedUser = getById(req.params.uuid);
+  if (searchedUser) {
+    editUserService(correctedUser)
+      .then((stats) => (stats[0] === 1 ? res.json(correctedUser) : res.sendStatus(404)))
+      .catch((err) => next(err));
+  } else {
+    res.sendStatus(404);
+  }
+}
+
+function userDelete(req, res, next) {
+  deleteUser(req.params.uuid)
+    .then((stats) => {
+      stats === 1 ? res.sendStatus(204) : res.sendStatus(404);
+    })
+    .catch((err) => next(err));
 }

@@ -128,6 +128,38 @@ const store = new Vuex.Store({
         })
         .catch((err) => console.log(err));
     },
+
+    async editUser(state, editedUser) {
+      state.commit("startLoading");
+      return axios
+        .put(`user/${editedUser.user_id}`, editedUser)
+        .then(() => {
+          var result = this.state.allUsers.findIndex((obj) => {
+            return obj.user_id === editedUser.user_id;
+          });
+
+          const updatedUser = this.state.allUsers;
+          updatedUser[result] = editedUser;
+          state.commit("setAllUser", updatedUser);
+          state.commit("stopLoading");
+        })
+        .catch((err) => console.log(err));
+    },
+
+    async delUser(state, uuid) {
+      return axios
+        .delete(`user/${uuid}`)
+        .then(() => {
+          var result = this.state.allUsers.findIndex((obj) => {
+            return obj.user_id === uuid;
+          });
+
+          const newUsers = this.state.allUsers;
+          newUsers.splice(result, 1);
+          state.commit("setAllUser", newUsers);
+        })
+        .catch((err) => console.log(err));
+    },
     //------------ Club ---------------
     async loadClub(state) {
       state.commit("startLoading");
@@ -166,6 +198,56 @@ const store = new Vuex.Store({
         });
     },
 
+    async createClub(state, newClub) {
+      //Remove empty player_id used for easy way of editing players
+      delete newClub.club_id;
+
+      return axios
+        .post("club", newClub)
+        .then(() => {
+          var result = this.state.allClubs.findIndex((obj) => {
+            return obj.club_id === newClub.club_id;
+          });
+
+          const updatedClubs = this.state.allClubs;
+          updatedClubs[result] = newClub;
+          state.commit("setAllClubs", updatedClubs);
+        })
+        .catch((err) => console.log(err));
+    },
+
+    async editClub(state, editedClub) {
+      state.commit("startLoading");
+      return axios
+        .put(`club/${editedClub.club_id}`, editedClub)
+        .then(() => {
+          var result = this.state.allClubs.findIndex((obj) => {
+            return obj.club_id === editedClub.club_id;
+          });
+
+          const updatedClubs = this.state.allClubs;
+          updatedClubs[result] = editedClub;
+          state.commit("setAllClubs", updatedClubs);
+          state.commit("stopLoading");
+        })
+        .catch((err) => console.log(err));
+    },
+
+    async delClub(state, uuid) {
+      return axios
+        .delete(`club/${uuid}`)
+        .then(() => {
+          var result = this.state.allClubs.findIndex((obj) => {
+            return obj.club_id === uuid;
+          });
+
+          const newClubs = this.state.allClubs;
+          newClubs.splice(result, 1);
+          state.commit("setAllClubs", newClubs);
+        })
+        .catch((err) => console.log(err));
+    },
+
     //------------ Player ---------------
     async loadAllPlayersOfClub(state) {
       state.commit("startLoading");
@@ -187,7 +269,6 @@ const store = new Vuex.Store({
     },
 
     async delPlayer(state, uuid) {
-      console.log(uuid);
       return axios
         .delete(`stats/players/${uuid}`)
         .then(() => {

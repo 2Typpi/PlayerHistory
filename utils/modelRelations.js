@@ -6,9 +6,9 @@ export default setRelations;
 
 function setRelations() {
   //Set relations for DB Models
-  User.hasOne(Club, { foreignKey: "user_id" });
-  Club.belongsTo(User);
+  User.hasOne(Club);
+  Club.belongsTo(User, { foreignKey: "user_id" });
 
   Club.hasMany(Player, { foreignKey: "club_id" });
-  Player.belongsTo(Club);
+  Player.belongsTo(Club, { foreignKey: "club_id" });
 }

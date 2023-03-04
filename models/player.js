@@ -4,7 +4,7 @@ import Sequelize from "sequelize";
 import { sequelizeCon } from "../utils/database.js";
 import { Club } from "./club.js";
 
-export const Player = sequelizeCon.define("player", {
+const Player = sequelizeCon.define("player", {
   player_id: {
     type: Sequelize.UUID,
     defaultValue: Sequelize.UUIDV4,
@@ -31,3 +31,7 @@ export const Player = sequelizeCon.define("player", {
   createdAt: Sequelize.DATE,
   updatedAt: Sequelize.DATE,
 });
+
+Player.belongsTo(Club, { foreignKey: "club_id" });
+
+export { Player };

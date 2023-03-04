@@ -53,3 +53,20 @@ export async function create(params) {
   // save user
   await User.create(newUser);
 }
+
+export async function editUserService(user) {
+  const editedUser = await User.update(user, {
+    where: {
+      user_id: user.user_id,
+    },
+  });
+  return editedUser;
+}
+
+export async function deleteUser(uuid) {
+  return User.destroy({
+    where: {
+      user_id: uuid,
+    },
+  });
+}

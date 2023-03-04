@@ -31,7 +31,12 @@
                     <v-text-field v-model="editedClubItem.ThirdTeam" label="3. Mannschaft"></v-text-field>
                   </v-col>
                   <v-col cols="12" sm="6" md="4">
-                    <v-text-field v-model="editedClubItem.user_id" label="User-ID"></v-text-field>
+                    <v-select
+                      label="Select a Username"
+                      v-model="editedClubItem.username"
+                      :items="usernames"
+                      variant="underlined"
+                    ></v-select>
                   </v-col>
                 </v-row>
               </v-container>
@@ -84,12 +89,13 @@ export default {
       dialogClub: false,
       dialogDeleteClub: false,
       clubs: [],
+      usernames: [],
       headersClub: [
         { text: 'Club-ID', value: 'club_id' },
         { text: 'Name', value: 'Name' },
         { text: '2. Mannschaft', value: 'SecondTeam' },
         { text: '3. Mannschaft', value: 'ThirdTeam' },
-        { text: 'User-ID', value: 'user_id' },
+        { text: 'User-ID', value: 'user.Username' },
         { text: 'Aktionen', value: 'actions', sortable: false },
       ],
       searchClub: '',
@@ -99,13 +105,14 @@ export default {
         Name: "",
         SecondTeam: "",
         ThirdTeam: "",
-        user_id: "",
+        username: "",
       },
       defaultClubItem: {
         club_id: "",
         Name: "",
         SecondTeam: "",
         ThirdTeam: "",
+        username: "",
       },
     }
   },
@@ -124,12 +131,15 @@ export default {
   },
   async created() {
     await this.$store.dispatch("loadAllClubs");
+    await this.$store.dispatch("loadAllUsers");
     this.clubs = this.$store.getters.allClubs;
+    this.usernames = this.$store.getters.allUsers.map((user) => user.Username);
   },
   methods: {
     editClubItem(item) {
       this.editedClubIndex = this.clubs.indexOf(item)
       this.editedClubItem = Object.assign({}, item)
+      this.editedClubItem.username = item.user.Username
       this.dialogClub = true
     },
 
@@ -140,7 +150,7 @@ export default {
     },
 
     deleteItemConfirm() {
-      this.$store.dispatch("delPlayer", this.editedClubItem.player_id)
+      this.$store.dispatch("delClub", this.editedClubItem.club_id)
       this.closeDelete()
     },
 
@@ -162,11 +172,11 @@ export default {
 
     save() {
       if (this.editedClubIndex > -1) {
-        Object.assign(this.players[this.editedClubIndex], this.editedClubItem)
-        this.$store.dispatch("editPlayer", this.editedClubItem)
+        Object.assign(this.clubs[this.editedClubIndex], this.editedClubItem)
+        this.$store.dispatch("editClub", this.editedClubItem)
       } else {
-        this.$store.dispatch("createPlayer", this.editedClubItem)
-        this.players.push(this.editedClubItem)
+        this.$store.dispatch("createClub", this.editedClubItem)
+        this.clubs.push(this.editedClubItem)
       }
       this.close()
     },
