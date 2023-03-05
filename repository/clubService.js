@@ -53,12 +53,16 @@ export async function editClubService(club) {
     throw 'Username "' + params.username + '" does not exist!';
   }
 
-  const editedClub = await Club.update(club, {
+  club.user_id = assignedUser.user_id;
+  delete club.username;
+  delete club.user;
+
+  return await Club.update(club, {
+    include: [{ model: User }],
     where: {
       club_id: club.club_id,
     },
   });
-  return editedClub;
 }
 
 export async function deleteClub(uuid) {

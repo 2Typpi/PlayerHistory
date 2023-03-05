@@ -32,6 +32,6 @@ const Player = sequelizeCon.define("player", {
   updatedAt: Sequelize.DATE,
 });
 
-Player.belongsTo(Club, { foreignKey: "club_id" });
+Player.belongsTo(Club, { foreignKey: "club_id", onDelete: "CASCADE", onUpdate: "CASCADE" });
 
 export { Player };

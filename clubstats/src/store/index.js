@@ -225,8 +225,11 @@ const store = new Vuex.Store({
             return obj.club_id === editedClub.club_id;
           });
 
+          editedClub.user.Username = editedClub.username;
+          delete editedClub.username;
           const updatedClubs = this.state.allClubs;
           updatedClubs[result] = editedClub;
+
           state.commit("setAllClubs", updatedClubs);
           state.commit("stopLoading");
         })

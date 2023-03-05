@@ -29,6 +29,6 @@ const Club = sequelizeCon.define("club", {
   updatedAt: Sequelize.DATE,
 });
 
-Club.belongsTo(User, { foreignKey: "user_id", onDelete: "CASCADE" });
+Club.belongsTo(User, { foreignKey: "user_id", onDelete: "CASCADE", onUpdate: "CASCADE" });
 
 export { Club };
