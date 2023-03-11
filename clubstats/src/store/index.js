@@ -129,6 +129,21 @@ const store = new Vuex.Store({
         .catch((err) => console.log(err));
     },
 
+    async createUser(state, newUser) {
+      return axios
+        .post("user/register", newUser)
+        .then(() => {
+          var result = this.state.allUsers.findIndex((obj) => {
+            return obj.user_id === newUser.user_id;
+          });
+
+          const updatedUsers = this.state.allUsers;
+          updatedUsers[result] = newUser;
+          state.commit("setAllUser", updatedUsers);
+        })
+        .catch((err) => console.log(err));
+    },
+
     async editUser(state, editedUser) {
       state.commit("startLoading");
       return axios
