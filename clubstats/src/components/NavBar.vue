@@ -14,7 +14,7 @@
       <v-icon right>mdi-cloud-download</v-icon>
     </v-btn>
 
-    <v-btn to="/management">
+    <v-btn v-if="isAdmin()" to="/management">
       Manage Clients
       <v-icon right>mdi-database</v-icon>
     </v-btn>
@@ -26,7 +26,7 @@
   </v-app-bar>
 </template>
 
-<script lang="js">
+<script>
 export default {
   name: 'NavBar',
   data() {
@@ -35,6 +35,9 @@ export default {
     }
   },
   methods: {
+    isAdmin() {
+      return sessionStorage.getItem("user") === 'admin'
+    },
     logout() {
       sessionStorage.clear();
       this.$store.commit("setUser", null);

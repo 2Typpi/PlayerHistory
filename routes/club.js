@@ -1,5 +1,5 @@
 import { Router } from "express";
-import authorize from "../middleware/authorize.js";
+import { authorize, authorizeAdmin } from "../middleware/authorize.js";
 import {
   getAll,
   getById,
@@ -15,8 +15,8 @@ router.post("/", authorize(), clubCreate);
 router.get("/", authorize(), clubGetAll);
 router.get("/:id", authorize(), clubGetById);
 router.get("/user/:username", authorize(), clubGetByUser);
-router.put("/:uuid", authorize(), editClub);
-router.delete("/:uuid", authorize(), clubDelete);
+router.put("/:uuid", authorizeAdmin(), editClub);
+router.delete("/:uuid", authorizeAdmin(), clubDelete);
 
 export default router;
 

@@ -9,7 +9,7 @@ import {
   editPlayerService,
   deletePlayerService,
 } from "../repository/statService.js";
-import authorize from "../middleware/authorize.js";
+import { authorize } from "../middleware/authorize.js";
 
 import { spawn } from "child_process";
 import { isUri } from "valid-url";

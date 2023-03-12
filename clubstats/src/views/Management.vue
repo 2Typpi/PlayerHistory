@@ -1,5 +1,5 @@
 <template>
-  <div v-if="this.$store.getters.user === null">
+  <div v-if="checkAccess()">
     <MissingRole></MissingRole>
   </div>
   <div v-else>
@@ -29,6 +29,11 @@ export default {
   name: 'management-view',
   data() {
     return {
+    }
+  },
+  methods: {
+    checkAccess() {
+      return this.$store.getters.user === null || sessionStorage.getItem("user") !== 'admin'
     }
   },
   components: {

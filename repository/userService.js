@@ -8,8 +8,13 @@ export async function authenticate({ Username, Password }) {
   if (!user || !(await bcrypt.compare(Password, user.Hash)))
     throw "Username or password is incorrect";
 
+  let userRole = "User";
+  if (user.Username === "admin") {
+    userRole = "Admin";
+  }
+
   // authentication successful
-  const token = jwt.sign({ sub: user.user_id }, "Big Secret", { expiresIn: "7d" });
+  const token = jwt.sign({ sub: user.user_id, role: userRole }, "Big Secret", { expiresIn: "7d" });
   return { ...omitHash(user.get()), token };
 }
 

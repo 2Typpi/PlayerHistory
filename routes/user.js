@@ -1,7 +1,7 @@
 import { Router } from "express";
 import Joi from "joi";
 import validateRequest from "../middleware/validate-request.js";
-import authorize from "../middleware/authorize.js";
+import { authorize, authorizeAdmin } from "../middleware/authorize.js";
 import {
   authenticate,
   getAll,
@@ -14,13 +14,13 @@ import {
 var router = Router();
 // routes
 router.post("/authenticate", authenticateSchema, userAuthenticate);
-router.post("/register", registerSchema, register);
+router.post("/register", registerSchema, authorizeAdmin(), register);
 router.get("/register/toggle", authorize(), registerEnableToggle);
 router.get("/", authorize(), userGetAll);
 router.get("/current", authorize(), getCurrent);
 router.get("/:id", authorize(), userGetById);
-router.put("/:uuid", authorize(), editUser);
-router.delete("/:uuid", authorize(), userDelete);
+router.put("/:uuid", authorizeAdmin(), editUser);
+router.delete("/:uuid", authorizeAdmin(), userDelete);
 
 export default router;
 

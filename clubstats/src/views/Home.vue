@@ -18,7 +18,7 @@
           <v-text-field
             v-model="search"
             append-icon="mdi-magnify"
-            label="Suche"
+            label="Suche nach Spieler..."
             single-line
             hide-details
           ></v-text-field>
