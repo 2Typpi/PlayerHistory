@@ -2,7 +2,8 @@
   <div v-if="this.$store.getters.user === null">
     <MissingRole></MissingRole>
   </div>
-  <div v-else class="home">
+  <v-card v-else class="home" flat>
+    <FloatingActionButton @editItem="editItem(null)"></FloatingActionButton>
     <v-data-table
       :headers="headers"
       :items="this.players"
@@ -13,7 +14,7 @@
         <v-toolbar
           flat
         >
-          <h2>Spieler Liste</h2>
+          <h2>Spieler</h2>
           <v-spacer></v-spacer>
           <v-text-field
             v-model="search"
@@ -31,7 +32,7 @@
               <v-btn
                 color="primary"
                 dark
-                class="mb-2"
+                class="mb-2 hidden-mobile"
                 v-bind="attrs"
                 v-on="on"
               >
@@ -84,6 +85,26 @@
                       <v-text-field
                         v-model="editedItem.YellowCards"
                         label="Gelbe Karten"
+                      ></v-text-field>
+                    </v-col>
+                    <v-col
+                      cols="12"
+                      sm="6"
+                      md="4"
+                    >
+                      <v-text-field
+                        v-model="editedItem.YellowCards"
+                        label="Gelb-Rote Karten"
+                      ></v-text-field>
+                    </v-col>
+                    <v-col
+                      cols="12"
+                      sm="6"
+                      md="4"
+                    >
+                      <v-text-field
+                        v-model="editedItem.RedCards"
+                        label="Rote Karten"
                       ></v-text-field>
                     </v-col>
                   </v-row>
@@ -141,11 +162,12 @@
         <v-subheader>No data found</v-subheader>
       </template>
     </v-data-table>
-  </div>
+  </v-card>
 </template>
 
 <script>
 import MissingRole from '@/components/MissingRole';
+import FloatingActionButton from '@/components/FloatingActionButton';
 
 export default {
   name: 'home-view',
@@ -200,7 +222,8 @@ export default {
     },
   },
   components: {
-    MissingRole
+    MissingRole,
+    FloatingActionButton
   },
   async created() {
     await this.$store.dispatch("loadClub");
@@ -208,13 +231,18 @@ export default {
     this.players = this.$store.getters.players;
   },
   methods: {
-    editItem (item) {
+    editItem(item) {
+      if (item !== null) {
         this.editedIndex = this.players.indexOf(item)
         this.editedItem = Object.assign({}, item)
+      } else {
+        this.editedIndex = -1;
+        this.editedItem = Object.assign({}, this.defaultItem)
+      }
         this.dialog = true
-      },
+    },
 
-    deleteItem (item) {
+    deleteItem(item) {
       this.editedIndex = this.players.indexOf(item)
       this.editedItem = Object.assign({}, item)
       this.dialogDelete = true
@@ -256,5 +284,4 @@ export default {
 </script>
 
 <style>
-
 </style>

@@ -2,22 +2,22 @@
   <div v-if="this.$store.getters.user === null">
     <MissingRole></MissingRole>
   </div>
-  <div v-else>
+  <v-card flat v-else>
     <LoadingOverlay></LoadingOverlay>
-    <h1>Daten vom BFV holen</h1>
-    <v-card class="d-flex align-center pa-2 justify-space-around" flat>
-      <v-row>
-        <v-col cols="10">
+    <v-dialog v-model="dialogLoad" max-width="500px">
+      <v-card>
+        <v-col cols="12">
           <v-text-field v-model="link" label="Link zum Spiel in BFV"></v-text-field>
         </v-col>
-
-        <v-col cols="2" class="d-flex align-center">
-          <v-btn color="primary" v-on:click="scrapeStats">Lade Statistiken</v-btn>
-          <v-btn color="primary" v-on:click="saveToDb">Speichern</v-btn>
-        </v-col>
-      </v-row>
-    </v-card>
-
+        <v-card-actions>
+          <v-spacer></v-spacer>
+          <v-btn color="blue darken-1" text @click="closeLoad">Cancel</v-btn>
+          <v-btn color="blue darken-1" text @click="scrapeStats">Lade Statistiken</v-btn>
+          <v-spacer></v-spacer>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
+    <SpeedDialButton @add="editItem(null)" @save="saveToDb()" @scrape="dialogLoad = true"></SpeedDialButton>
     <v-data-table
       :headers="headers"
       :items="this.players"
@@ -28,12 +28,12 @@
         <v-toolbar
           flat
         >
-        <h2>Spieler aus dem Spiel</h2>
+        <h2>Spieler</h2>
           <v-spacer></v-spacer>
           <v-text-field
             v-model="search"
             append-icon="mdi-magnify"
-            label="Search"
+            label="Suche nach Spieler..."
             single-line
             hide-details
           ></v-text-field>
@@ -46,7 +46,7 @@
               <v-btn
                 color="primary"
                 dark
-                class="mb-2"
+                class="mb-2 hidden-mobile"
                 v-bind="attrs"
                 v-on="on"
               >
@@ -193,12 +193,14 @@
           Close
         </v-btn>
     </v-snackbar>
-  </div>
+  </v-card>
 </template>
 
 <script>
 import MissingRole from '@/components/MissingRole';
 import LoadingOverlay from '@/components/LoadingOverlay';
+import SpeedDialButton from '@/components/SpeedDialButton';
+
 
 export default {
   name: 'scrape-view',
@@ -214,6 +216,7 @@ export default {
         player_id:"",
       },
       dialog: false,
+      dialogLoad: false,
       dialogDelete: false,
       editedIndex: -1,
       editedItem: {
@@ -232,7 +235,7 @@ export default {
         { text: 'Gelbe Karten', value: 'yellow_cards' },
         { text: 'Gelb-Rote Karten', value: 'yellow_red_cards' },
         { text: 'Rote Karten', value: 'red_cards' },
-        { text: 'Actions', value: 'actions', sortable: false },
+        { text: 'Aktionen', value: 'actions', sortable: false },
       ],
       link: '',
       players: [],
@@ -244,14 +247,18 @@ export default {
   },
   components: {
     MissingRole,
-    LoadingOverlay
+    LoadingOverlay,
+    SpeedDialButton
   },
   computed: {
     formTitle () {
-      return this.editedIndex === -1 ? 'New Item' : 'Edit Item'
+      return this.editedIndex === -1 ? 'Neuer Spieler' : 'Editiere Spieler'
     },
   },
   watch: {
+    closeLoad(val) {
+      val || this.closeLoad();
+    },
     dialog (val) {
       val || this.close()
     },
@@ -263,11 +270,18 @@ export default {
     async scrapeStats () {
       await this.$store.dispatch("activateScript", this.link)
       this.players = this.$store.getters.scrapedPlayers;
+      this.dialogLoad = false
     },
     editItem (item) {
-      this.editedIndex = this.players.indexOf(item)
-      this.editedItem = Object.assign({}, item)
       this.dialog = true
+      if (item !== null) {
+        this.editedIndex = this.players.indexOf(item)
+        this.editedItem = Object.assign({}, item)
+      } else {
+        this.editedIndex = -1
+        this.editedItem = Object.assign({}, this.defaultItem)
+      }
+
     },
 
     deleteItem (item) {
@@ -286,6 +300,13 @@ export default {
       this.$nextTick(() => {
         this.editedItem = Object.assign({}, this.defaultItem)
         this.editedIndex = -1
+      })
+    },
+
+    closeLoad() {
+      this.dialogLoad = false
+      this.$nextTick(() => {
+        this.link = ""
       })
     },
 
