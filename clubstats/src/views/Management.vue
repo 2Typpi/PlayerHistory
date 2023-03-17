@@ -36,6 +36,11 @@ export default {
       return this.$store.getters.user === null || sessionStorage.getItem("user") !== 'admin'
     }
   },
+  async created() {
+    if(sessionStorage.getItem("token") == null) {
+      this.$router.push('/');
+    }
+  },
   components: {
     MissingRole,
     ClubTable,

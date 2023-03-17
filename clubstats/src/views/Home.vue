@@ -9,7 +9,9 @@
       :items="this.players"
       :search="search"
       :items-per-page = "-1"
-      hide-default-footer>
+      hide-default-footer
+      fixed-header
+      mobile-breakpoint="0">
       <template v-slot:top>
         <v-toolbar
           flat
@@ -226,6 +228,9 @@ export default {
     FloatingActionButton
   },
   async created() {
+    if (sessionStorage.getItem("token") == null) {
+      this.$router.push('/');
+    }
     await this.$store.dispatch("loadClub");
     await this.$store.dispatch("loadAllPlayersOfClub");
     this.players = this.$store.getters.players;
@@ -284,4 +289,5 @@ export default {
 </script>
 
 <style>
+
 </style>

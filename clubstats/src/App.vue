@@ -56,6 +56,10 @@ export default {
     .hidden-desktop {
       display: none;
     }
+
+    .v-data-table__wrapper {
+      height: 80vh;
+    }
   }
   @media only screen and (max-width: 1026px) {
     h1, h2, h3,
@@ -66,6 +70,21 @@ export default {
 
     .hidden-mobile {
       display: none;
+    }
+    .v-data-table__wrapper {
+      height: 75vh;
+    }
+
+    table > tbody > tr > td:nth-child(1),
+    table > thead > tr > th:nth-child(1) {
+      position: sticky !important;
+      position: -webkit-sticky !important;
+      left: 0;
+      z-index: 3;
+      background: white;
+    }
+    .v-data-table--fixed-header > .v-data-table__wrapper > table > thead > tr > th:nth-child(1) {
+      z-index: 4;
     }
   }
 </style>
