@@ -25,7 +25,15 @@ const app = express();
 app.set("views", join(__dirname, "views"));
 app.set("view engine", "ejs");
 
-app.use(cors());
+const corsOpts = {
+  origin: "*",
+
+  methods: ["GET", "POST"],
+
+  allowedHeaders: ["Content-Type"],
+};
+
+app.use(cors(corsOpts));
 app.use(helmet());
 app.use(compression());
 app.use(express.json());
