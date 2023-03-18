@@ -31,23 +31,32 @@
       absolute
       temporary
     >
+      <v-list color="primary" dark>
+          <v-list-item to="/home">
+            <v-img :src="getPngUrl()" class="drawer-image shrink mr-2"></v-img>
+          </v-list-item>
+          <v-list-item to="/home">
+            <v-list-item-content>
+              <v-list-item-title class="text-h6">{{ clubname }}</v-list-item-title>
+              <v-list-item-subtitle>Benutzer: {{ username }}</v-list-item-subtitle>
+            </v-list-item-content>
+          </v-list-item>
+      </v-list>
       <v-list
         nav
       >
-        <v-list-item-group>
-          <v-list-item to="/scrape">
-            <v-list-item-title><v-icon left>mdi-cloud-download</v-icon>BFV Daten</v-list-item-title>
-          </v-list-item>
+        <v-divider></v-divider>
+        <v-list-item to="/scrape">
+          <v-list-item-title><v-icon left>mdi-cloud-download</v-icon>BFV Daten</v-list-item-title>
+        </v-list-item>
 
-          <v-list-item v-if="isAdmin()" to="/management">
-            <v-list-item-title><v-icon left>mdi-database</v-icon>Manage Clients</v-list-item-title>
-          </v-list-item>
+        <v-list-item v-if="isAdmin()" to="/management">
+          <v-list-item-title><v-icon left>mdi-database</v-icon>Manage Clients</v-list-item-title>
+        </v-list-item>
 
-          <v-list-item v-on:click="logout">
-            <v-list-item-title>Logout</v-list-item-title>
-          </v-list-item>
-
-        </v-list-item-group>
+        <v-list-item v-on:click="logout">
+          <v-list-item-title>Logout</v-list-item-title>
+        </v-list-item>
       </v-list>
     </v-navigation-drawer>
   </div>
@@ -59,7 +68,8 @@ export default {
   data() {
     return {
       drawer: false,
-      clubname: sessionStorage.getItem("clubname")
+      clubname: sessionStorage.getItem("clubname"),
+      username: sessionStorage.getItem("user"),
     }
   },
   methods: {
@@ -85,6 +95,14 @@ export default {
 </script>
 
 <style>
+  .drawer-image {
+    width: 50%;
+  }
+
+  .top-drawer {
+    background-color: #1d3b93;
+  }
+
   .v-btn {
     margin-left: 15px;
   }

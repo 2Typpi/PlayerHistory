@@ -3,7 +3,6 @@
     <MissingRole></MissingRole>
   </div>
   <v-card v-else class="home" flat>
-    <FloatingActionButton @editItem="editItem(null)"></FloatingActionButton>
     <v-data-table
       :headers="headers"
       :items="this.players"
@@ -164,6 +163,7 @@
         <v-subheader>No data found</v-subheader>
       </template>
     </v-data-table>
+    <FloatingActionButton @editItem="editItem(null)"></FloatingActionButton>
   </v-card>
 </template>
 
@@ -231,6 +231,7 @@ export default {
     if (sessionStorage.getItem("token") == null) {
       this.$router.push('/');
     }
+
     await this.$store.dispatch("loadClub");
     await this.$store.dispatch("loadAllPlayersOfClub");
     this.players = this.$store.getters.players;
